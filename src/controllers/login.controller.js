@@ -14,6 +14,8 @@ const createUser = async (req, res) => {
   const token = generateToken({ newUser });
   return res.status(200).json({ token });
 };
+
 module.exports = {
     createUser,
+    
 };
