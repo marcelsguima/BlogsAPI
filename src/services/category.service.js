@@ -9,6 +9,6 @@ const registerCategory = async (name) => {
 
 module.exports = { 
    getAllCategories, 
-    registerCategory,
+   registerCategory,
 
  };
