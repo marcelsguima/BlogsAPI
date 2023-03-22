@@ -15,7 +15,8 @@ const registerUser = async (req, res) => {
       return res.status(409).json({ message: 'User already registered' });
     }
     const newUser = await userService.registerUser(displayName, email, password, image);
-    const token = generateToken({ newUser });
+    console.log(newUser, 'NEWUSER');
+    const token = generateToken(newUser);
     res.status(201).json({ token });
   } catch (err) {
     console.error(err.message);

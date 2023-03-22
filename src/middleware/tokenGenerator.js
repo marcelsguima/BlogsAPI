@@ -2,13 +2,14 @@ const jwt = require('jsonwebtoken');
 
 const secret = process.env.JWT_SECRET;
 
-const JWT_SECRET = {
+const JWT_CONFIG = {
     algorithm: 'HS256',
-    expiresIn: '7d',
+    // expiresIn: '7d',  Won't work.
 };
 
 const generateToken = (payload) => {
-    const token = jwt.sign(payload, secret, JWT_SECRET);
+    console.log(payload, 'PAYLOAD');
+    const token = jwt.sign(payload, secret, JWT_CONFIG);
     return token;
 };
 
