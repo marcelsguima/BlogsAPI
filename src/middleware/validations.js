@@ -8,6 +8,8 @@ const registerUserSchema = Joi.object({
   image: Joi.string(),
 });
 
+const registerCategorySchema = Joi.object({ name: Joi.string().required() });
+
 const tokenValidation = (req, res, next) => {
   try {
     const { authorization } = req.headers;
@@ -23,5 +25,6 @@ const tokenValidation = (req, res, next) => {
 };
 module.exports = { 
     registerUserSchema,
+    registerCategorySchema,
     tokenValidation,
  }; 
