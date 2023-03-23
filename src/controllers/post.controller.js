@@ -1,5 +1,45 @@
 const postService = require('../services/post.service');
 const { registerPostSchema } = require('../middleware/validations');
+const validations = require('../middleware/validations');
+
+const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = await validations.tokenValidation(req.headers.Authorization);
+    const post = await postService.getUserPostId(id);
+    if (!post) {
+      return res.status(404).json({ message: 'Post does not exist' });
+    }
+    if (post.dataValues.userId !== userId) {
+      return res.status(401).json({ message: 'Unauthorized user' });
+    }
+    await postService.deletePost(id);
+    return res.status(204).json();
+  } catch (err) {
+    console.error(err.message);
+    return res.status(400).json({ message: err.message });
+  }
+};
+
+const editPost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { userId } = await validations.tokenValidation(req.headers.Authorization);
+    const { title, content } = req.body;
+    const { dataValues } = await postService.getUserPostId(id);
+    if (!dataValues) {
+      return res.status(404).json({ message: 'Post does not exist' });
+    }
+    if (dataValues.userId !== userId) {
+      return res.status(401).json({ message: 'Unauthorized user' });
+    }
+    await postService.editPost({ title, content }, id);
+    return res.status(200).json({ title, content });
+  } catch (err) {
+    console.error(err.message);
+    return res.status(400).json({ message: err.message });
+  }
+};
 
 const getPostById = async (req, res) => {
   try {
@@ -48,4 +88,6 @@ module.exports = {
     getAllPosts,
     registerPost,
     getPostById,
+    deletePost,
+    editPost,
 };
