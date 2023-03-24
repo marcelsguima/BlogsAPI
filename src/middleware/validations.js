@@ -13,13 +13,13 @@ const registerPostSchema = Joi.object({
     'string.empty': 'Some required fields are missing',
   }),
   content: Joi.string().required(),
-  categoryIds: Joi.array()
-    .length(2)
-    .items(Joi.number())
-    .required()
-    .messages({
-      'array.length': 'One or more "categoryIds" not found',
-    }),
+  categoryIds: Joi.array(),
+    // .length(2)
+    // .items(Joi.number())
+    // .required()
+    // .messages({
+    //   'array.length': 'One or more "categoryIds" not found',
+    // }),
      userId: Joi.number().required(),
 });
 

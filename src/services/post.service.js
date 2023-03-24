@@ -22,11 +22,22 @@ const getAllPosts = async () => BlogPost.findAll({
      { model: Category, as: 'categories', through: { attributes: [] } },
 ] });
 
+const validateCategories = async (categoryIds) => {
+    const allCategories = categoryIds.map((id) => Category.findOne({ where: { id } }));
+    const result = await Promise.all(allCategories);
+    if (result.some((e) => e === null)) {
+        throw new Error('one or more "categoryIds" not found');
+    }
+    return result;
+};
+
 const registerNewPost = async ({ title, content, categoryIds, userId }) => {
+   await validateCategories(categoryIds);    
     const t = await sequelize.transaction();
    try {
     const newPost = await BlogPost.create({
         title, content, categoryIds, userId }, { transaction: t });
+        console.log(categoryIds, 'CATEGORYS');
     
     const allCategories = categoryIds.map((categoriesIds) => 
     ({ categoryId: categoriesIds, postId: newPost.id }));

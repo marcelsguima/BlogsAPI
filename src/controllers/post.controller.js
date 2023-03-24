@@ -77,9 +77,9 @@ const registerPost = async (req, res) => {
   res.status(201).json(newPost);
   } catch (err) {
     console.error(err.message);
-    if (err.isJoi) {
-      return res.status(400).json({ message: err.details[0].message });
-    }
+    // if (err.isJoi) {
+    //   return res.status(400).json({ message: err.details[0].message });
+    // }
     res.status(400).json({ message: err.message });
   }
 };
