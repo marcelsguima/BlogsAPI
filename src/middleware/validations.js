@@ -1,5 +1,6 @@
 const Joi = require('joi');
 const { verifyToken } = require('./tokenGenerator');
+const jwt = require('jsonwebtoken');
 
 const registerUserSchema = Joi.object({
   displayName: Joi.string().min(8).required(),
@@ -14,28 +15,22 @@ const registerPostSchema = Joi.object({
   }),
   content: Joi.string().required(),
   categoryIds: Joi.array(),
-    // .length(2)
-    // .items(Joi.number())
-    // .required()
-    // .messages({
-    //   'array.length': 'One or more "categoryIds" not found',
-    // }),
-     userId: Joi.number().required(),
+  userId: Joi.number().required(),
 });
-
+const secret = process.env.JWT_SECRET || 'valor padrão'
 const registerCategorySchema = Joi.object({ name: Joi.string().required() });
 
 const tokenValidation = (req, res, next) => {
   try {
-    const { authorization } = req.headers;
+    const  authorization  = req.header('Authorization');
     if (!authorization) {
       return res.status(401).json({ message: 'Token not found' });
     }
-    const payload = verifyToken(authorization);
-    console.log(payload, 'PAYLOAD');
-    req.body.userId = Number(payload);
+    const payload = jwt.verify(authorization, secret)
+    req.payload = payload;
     next();
   } catch (error) {
+    console.log(error, 'error');
     return res.status(401).json({ message: 'Expired or invalid token' });
   }
 };

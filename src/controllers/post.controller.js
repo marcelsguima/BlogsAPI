@@ -2,23 +2,12 @@ const postService = require('../services/post.service');
 const { registerPostSchema } = require('../middleware/validations');
 const validations = require('../middleware/validations');
 
+
 const deletePost = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { userId } = await validations.tokenValidation(req.headers.Authorization);
-    const post = await postService.getUserPostId(id);
-    if (!post) {
-      return res.status(404).json({ message: 'Post does not exist' });
-    }
-    if (post.dataValues.userId !== userId) {
-      return res.status(401).json({ message: 'Unauthorized user' });
-    }
-    await postService.deletePost(id);
-    return res.status(204).json();
-  } catch (err) {
-    console.error(err.message);
-    return res.status(400).json({ message: err.message });
-  }
+  const postId = Number(req.params.id);
+  const data = req.payload;
+  const deletePost = await postService.deletePost(+data, postId);
+  return res.status(deletePost.type).json(deletePost.message);
 };
 
 const editPost = async (req, res) => {
@@ -67,19 +56,16 @@ const getAllPosts = async (req, res) => {
 
 const registerPost = async (req, res) => {
   try {
-  const { title, content, categoryIds, userId } = req.body;
-  const { error } = await registerPostSchema.validateAsync(req.body);
+  const { title, content, categoryIds } = req.body;
+  const userId = req.payload;
+  const { error } = await registerPostSchema.validateAsync({...req.body, userId: +userId} );
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
   }  
-  console.log(req.body);
-  const newPost = await postService.registerNewPost({ title, content, categoryIds, userId });
+  const newPost = await postService.registerNewPost({ title, content, categoryIds, userId: +userId });
   res.status(201).json(newPost);
   } catch (err) {
     console.error(err.message);
-    // if (err.isJoi) {
-    //   return res.status(400).json({ message: err.details[0].message });
-    // }
     res.status(400).json({ message: err.message });
   }
 };
