@@ -2,11 +2,10 @@ const postService = require('../services/post.service');
 const { registerPostSchema } = require('../middleware/validations');
 const validations = require('../middleware/validations');
 
-
 const deletePost = async (req, res) => {
   const postId = Number(req.params.id);
   const data = req.payload;
-  const deletePost = await postService.deletePost(+data, postId);
+  await postService.deletePost(+data, postId);
   return res.status(deletePost.type).json(deletePost.message);
 };
 
@@ -58,11 +57,12 @@ const registerPost = async (req, res) => {
   try {
   const { title, content, categoryIds } = req.body;
   const userId = req.payload;
-  const { error } = await registerPostSchema.validateAsync({...req.body, userId: +userId} );
+  const { error } = await registerPostSchema.validateAsync({ ...req.body, userId: +userId });
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
   }  
-  const newPost = await postService.registerNewPost({ title, content, categoryIds, userId: +userId });
+  const newPost = await postService.registerNewPost({ 
+    title, content, categoryIds, userId: +userId });
   res.status(201).json(newPost);
   } catch (err) {
     console.error(err.message);
