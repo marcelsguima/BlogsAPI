@@ -1,5 +1,15 @@
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
+const postService = require('../services/post.service');
+
+const queryValidation = async (req, res, next) => {
+  const { q } = req.query;
+  if (!q) {
+    const allPosts = await postService.getAllPosts();
+    return res.status(allPosts.type).json(allPosts.message);
+  }
+  next();
+};
 
 const registerUserSchema = Joi.object({
   displayName: Joi.string().min(8).required(),
@@ -38,4 +48,5 @@ module.exports = {
     registerCategorySchema,
     tokenValidation,
     registerPostSchema,
+    queryValidation,
  }; 

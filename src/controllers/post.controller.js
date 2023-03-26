@@ -2,6 +2,12 @@ const postService = require('../services/post.service');
 const { registerPostSchema } = require('../middleware/validations');
 const validations = require('../middleware/validations');
 
+const getPostByQuery = async (req, res) => {
+  const query = req.query.q;
+  const postsQuery = await postService.getPostByQuery(query);
+  res.status(postsQuery.type).json(postsQuery.message);
+};
+
 const deletePost = async (req, res) => {
   const postId = Number(req.params.id);
   const data = req.payload;
@@ -76,4 +82,5 @@ module.exports = {
     getPostById,
     deletePost,
     editPost,
+    getPostByQuery,
 };

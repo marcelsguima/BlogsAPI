@@ -12,9 +12,14 @@ const registerUser = async (displayName, email, password, image) => {
    return user.dataValues.id;
 };
 
+const deleteMe = async (id) => {
+  await User.destroy({ where: { id } });
+};
+
 module.exports = { 
     getAll, 
     registerUser,
     getUserByEmail,
     getUserById,
+    deleteMe,
  };

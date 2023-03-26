@@ -1,6 +1,16 @@
 const userService = require('../services/user.service');
 const { generateToken } = require('../middleware/tokenGenerator');
 const { registerUserSchema } = require('../middleware/validations');
+const { verifyToken } = require('../middleware/tokenGenerator');
+
+const deleteMe = async (req, res) => {
+  const token = verifyToken(req.headers.authorization);
+  console.log('TOKEN', token, 'TOKEN');
+  const { id } = token;
+  console.log(id, 'USERID');
+  await userService.deleteMe(id);
+  return res.status(204).json();
+};
 
 const getAll = async (req, res) => {
   const users = await userService.getAll();
@@ -40,4 +50,5 @@ module.exports = {
     getAll,
     registerUser,
     getUserById,
+    deleteMe,
 };
