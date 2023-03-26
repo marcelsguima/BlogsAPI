@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const secret = process.env.JWT_SECRET || 'valor padrão'
+const secret = process.env.JWT_SECRET || 'valor padrão';
 
 const JWT_CONFIG = {
     algorithm: 'HS256',
@@ -14,12 +14,11 @@ const generateToken = (payload) => {
 };
 
 const verifyToken = (token) => {
-    try{
-
+    try {
         const decoded = jwt.verify(token, secret);
         return decoded;
-    }catch(err){
-        throw new Error( 'message')
+    } catch (err) {
+        throw new Error('message');
     }
 };
 

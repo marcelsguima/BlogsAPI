@@ -1,6 +1,5 @@
 const { BlogPost, Category, User, PostCategory } = require('../models');
 const { sequelize } = require('../models');
-const jwt = require('jsonwebtoken');
 
 const getUserPostId = async (id) => BlogPost.findByPk(id, { 
     include: [{ model: User, as: 'user', attributes: { exclude: 'password' } },
@@ -10,27 +9,17 @@ const getUserPostId = async (id) => BlogPost.findByPk(id, {
 const deletePost = async (userId, id) => {
     try {
       const postData = await BlogPost.findByPk(id);
-      console.log(postData, 'postData');
-      console.log(id, 'id');
       if (!postData) {
         return { type: 404, message: { message: 'Post does not exist' } };
       }
-     //   const currentUserId = jwt.verify(token, process.env.JWT_SECRET || 'valor padrão');
-    //   if (!currentUserId || !currentUserId.data) {
-    //     return { type: 401, message: { message: 'Unauthorized user' } };
-    //   }
-    
       if (!userId) {
         return { type: 401, message: { message: 'Unauthorized user' } };
       }
-  
       if (postData.dataValues.userId !== userId) {
         return { type: 401, message: { message: 'Unauthorized user' } };
       }
-  
-      await BlogPost.destroy({ where: { id } });
-  
-      return { type: 204, message: { message: 'Post deleted' } };
+       await BlogPost.destroy({ where: { id } });
+       return { type: 204, message: { message: 'Post deleted' } };
     } catch (error) {
       console.error(error);
       return { type: 500, message: { message: 'Internal server error' } };

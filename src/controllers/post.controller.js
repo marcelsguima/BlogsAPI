@@ -5,8 +5,8 @@ const validations = require('../middleware/validations');
 const deletePost = async (req, res) => {
   const postId = Number(req.params.id);
   const data = req.payload;
-  await postService.deletePost(+data, postId);
-  return res.status(deletePost.type).json(deletePost.message);
+  const response = await postService.deletePost(+data, postId);
+  return res.status(response.type).json(response.message);
 };
 
 const editPost = async (req, res) => {
