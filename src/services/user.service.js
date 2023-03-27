@@ -9,6 +9,7 @@ const getUserById = async (id) => User.findOne({
 
 const registerUser = async (displayName, email, password, image) => {
   const user = await User.create({ displayName, email, password, image });
+  console.log(user, 'USER');
    return user.dataValues.id;
 };
 

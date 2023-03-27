@@ -4,14 +4,16 @@ const validations = require('../middleware/validations');
 
 const getPostByQuery = async (req, res) => {
   const query = req.query.q;
+  console.log(query);
   const postsQuery = await postService.getPostByQuery(query);
+  console.log(postsQuery);
   res.status(postsQuery.type).json(postsQuery.message);
 };
 
 const deletePost = async (req, res) => {
   const postId = Number(req.params.id);
-  const data = req.payload;
-  const response = await postService.deletePost(+data, postId);
+  const { id } = req.payload;
+  const response = await postService.deletePost(id, postId);
   return res.status(response.type).json(response.message);
 };
 
@@ -62,7 +64,8 @@ const getAllPosts = async (req, res) => {
 const registerPost = async (req, res) => {
   try {
   const { title, content, categoryIds } = req.body;
-  const userId = req.payload;
+  const userId = req.payload.id;
+  console.log(userId, 'USERid');
   const { error } = await registerPostSchema.validateAsync({ ...req.body, userId: +userId });
   if (error) {
     return res.status(400).json({ message: error.details[0].message });

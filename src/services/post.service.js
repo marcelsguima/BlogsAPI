@@ -1,22 +1,26 @@
+const { Op } = require('sequelize');
 const { BlogPost, Category, User, PostCategory } = require('../models');
 const { sequelize } = require('../models');
 
 const getPostByQuery = async (query) => {
-  try {
-    const searchQuery = await BlogPost.findAll({
-      where: {
-        [sequelize.or]: [{ title: { [sequelize.like]: query } },
-         { content: { [sequelize.like]: query } }],
-      },
-      include: [{ model: User, as: 'user', attributes: { exclude: 'password' } },
-       { model: Category, as: 'categories' }],
-    });
-    console.log(searchQuery, 'searchQuery');
-    return { status: 200, message: searchQuery };
-  } catch (error) {
-    console.error(error);
-    return { status: 500, message: 'Internal Server Error' };
-  }
+    const getQuery = await BlogPost.findAll({
+    where: {
+      [Op.or]: [
+        {
+        title: { [Op.like]: `%${query}%`,
+        } },
+        {
+          content: { [Op.like]: `%${query}%`,
+          },
+      }],
+    },
+    include: [
+      { model: User, as: 'user', attributes: { exclude: 'password' } },
+      { model: Category, as: 'categories' },
+    ],
+  });
+  console.log(getQuery);
+  return { type: 200, message: getQuery };
 };
 
 const getUserPostId = async (id) => BlogPost.findByPk(id, { 

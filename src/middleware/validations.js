@@ -2,11 +2,32 @@ const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 const postService = require('../services/post.service');
 
+function extractDataValues(getPosts) {
+  return getPosts.map((blogPost) => {
+    const { id, title, content, userId, published, updated } = blogPost.dataValues;
+    const { id: userIdValue, displayName, email, image } = blogPost.user.dataValues;
+    const categories = blogPost.categories.map((category) => category.dataValues);
+    return { id,
+      title,
+      content,
+      userId,
+      published,
+      updated,
+      user: { 
+        id: userIdValue, displayName, email, image },
+      categories };
+  });
+}
+
 const queryValidation = async (req, res, next) => {
   const { q } = req.query;
-  if (!q) {
-    const allPosts = await postService.getAllPosts();
-    return res.status(allPosts.type).json(allPosts.message);
+  console.log(q, 'q');
+
+  if (q === '') {
+    const getPosts = await postService.getAllPosts();
+    const allPosts = extractDataValues(getPosts);
+    console.log(allPosts, 'allPosts');
+    return res.status(200).json(allPosts);
   }
   next();
 };
