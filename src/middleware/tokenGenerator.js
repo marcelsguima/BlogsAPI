@@ -8,7 +8,7 @@ const JWT_CONFIG = {
 };
 
 const generateToken = (payload) => {
-    const token = jwt.sign(payload, secret, JWT_CONFIG);
+    const token = jwt.sign({ data: payload }, secret, JWT_CONFIG);
     return token;
 };
 

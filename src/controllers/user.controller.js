@@ -1,14 +1,15 @@
 const userService = require('../services/user.service');
 const { generateToken } = require('../middleware/tokenGenerator');
 const { registerUserSchema } = require('../middleware/validations');
-const { verifyToken } = require('../middleware/tokenGenerator');
+// const { verifyToken } = require('../middleware/tokenGenerator');
 
 const deleteMe = async (req, res) => {
-  const token = verifyToken(req.headers.authorization);
-  console.log('TOKEN', token, 'TOKEN');
-  const { id } = token;
-  console.log(id, 'USERID');
-  await userService.deleteMe(id);
+  // console.log(req.payload.data.id, 'PAYLOAD');
+  const userId = req.payload.id;
+  // console.log('TOKEN', token.id, 'TOKEN');
+  // const { id } = token.data;
+  // console.log(token, 'TOKEN');
+  await userService.deleteMe(userId);
   return res.status(204).json();
 };
 
