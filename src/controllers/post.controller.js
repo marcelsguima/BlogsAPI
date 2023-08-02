@@ -4,9 +4,7 @@ const validations = require('../middleware/validations');
 
 const getPostByQuery = async (req, res) => {
   const query = req.query.q;
-  console.log(query);
   const postsQuery = await postService.getPostByQuery(query);
-  console.log(postsQuery);
   res.status(postsQuery.type).json(postsQuery.message);
 };
 
